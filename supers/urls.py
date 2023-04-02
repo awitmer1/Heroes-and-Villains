@@ -5,5 +5,5 @@ from . import views
 ## App URLs = Endpoint URLs ##
 urlpatterns = [
     path('', views.supers_list),
-    path('<int:pk>/', views.supers_list),
+    path('<int:pk>/', views.super_detail),
 ]
