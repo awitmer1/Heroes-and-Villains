@@ -31,7 +31,14 @@ def supers_list(request):
 
     if request.method == 'GET':
 
+        super_type = request.query_params.get('super_type')
+        print(super_type)
+
         supers = Supers.objects.all()
+
+        if super_type:
+            supers = supers.filter(super_type__type=super_type)
+
         serialzer = SupersSerializer(supers, many=True)
         return Response(serialzer.data, status=status.HTTP_200_OK)
     
