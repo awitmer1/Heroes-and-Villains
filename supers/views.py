@@ -6,41 +6,34 @@ from .serializer import SupersSerializer
 from .models import Supers
 
 
-"""
-            ## address bar query logic ##
-        dealership_name = request.query_params.get('dealership')
-        print(dealership_name)
-
-        queryset = Car.objects.all()
-
-        if dealership_name:
-            queryset = queryset.filter(dealership__name=dealership_name)
-        
-        
-        ##original filter##
-        # cars = Car.objects.all()
-        serializer = CarSerializer(queryset, many=True) ##set first parameter to the correct object call function ['queryset' for filter, 'cars' for all]
-        return Response(serializer.data)
-    """
-
-
 # Create your views here.
 @api_view(['GET', 'POST'])
 
 def supers_list(request):
 
     if request.method == 'GET':
+        
+        supers = Supers.objects.all()
 
         super_type = request.query_params.get('super_type')
         print(super_type)
 
-        supers = Supers.objects.all()
-
         if super_type:
             supers = supers.filter(super_type__type=super_type)
 
+        heroes_list = supers.filter(super_type__type="hero")
+        villain_list = supers.filter(super_type__type="villain")
+
         serialzer = SupersSerializer(supers, many=True)
-        return Response(serialzer.data, status=status.HTTP_200_OK)
+        hero_serializer = SupersSerializer(heroes_list, many=True)
+        villain_serializer = SupersSerializer(villain_list, many=True)
+        
+        custom_response_dict = {
+            'heroes': hero_serializer.data,
+            'villains': villain_serializer.data
+        }
+        
+        return Response(custom_response_dict, status=status.HTTP_200_OK)
     
     elif request.method == 'POST':
 
